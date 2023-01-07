@@ -1,6 +1,7 @@
 package com.example.demo.member.controller;
 
 import com.example.demo.member.service.MemberService;
+import com.example.demo.member.util.Ut;
 import com.example.demo.member.vo.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,27 +20,27 @@ public class UsrMemberController {
 
     int id = memberService.join(loginId, loginPw, name, nickname, cellphoneNo, email);
 
-    if( loginId == null){
+    if( Ut.empty(loginId) ){
       return "loginId(을)를 입력 해주세요.";
     }
 
-    if( loginPw == null){
+    if(Ut.empty(loginPw)  ){
       return "loginPw(을)를 입력 해주세요.";
     }
 
-    if( name == null){
+    if( Ut.empty(name)  ){
       return "name(을)를 입력 해주세요.";
     }
 
-    if( nickname == null){
+    if( Ut.empty(nickname)  ){
       return "nickname(을)를 입력 해주세요.";
     }
 
-    if( cellphoneNo == null){
+    if( Ut.empty(cellphoneNo) ){
       return "cellphoneNo(을)를 입력 해주세요.";
     }
 
-    if( email == null){
+    if( Ut.empty(email) ){
       return "email(을)를 입력 해주세요.";
     }
 
