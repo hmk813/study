@@ -3,10 +3,13 @@ package com.example.demo.controller;
 import com.example.demo.service.MemberService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Member;
+import com.example.demo.vo.ResultData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.xml.transform.Result;
 
 @Controller
 public class UsrMemberController {
@@ -15,46 +18,46 @@ public class UsrMemberController {
 
   @RequestMapping("/usr/member/doJoin")
   @ResponseBody
-  public Object doJoin(String loginId, String loginPw, String name, String nickname,
-                       String cellphoneNo, String email) { //Object 나중에 코드 개선할꺼임!
+  public ResultData doJoin(String loginId, String loginPw, String name, String nickname,
+                           String cellphoneNo, String email) { //Object -> ResultData로 코드 개선
 
     if( Ut.empty(loginId) ){
-      return "loginId(을)를 입력 해주세요.";
+      return ResultData.from("F-1","loginId(을)를 입력 해주세요.");
     }
 
     if(Ut.empty(loginPw)  ){
-      return "loginPw(을)를 입력 해주세요.";
+      return ResultData.from("F-2","loginPw(을)를 입력 해주세요.");
     }
 
     if( Ut.empty(name)  ){
-      return "name(을)를 입력 해주세요.";
+      return ResultData.from("F-3","name(을)를 입력 해주세요.");
     }
 
     if( Ut.empty(nickname)  ){
-      return "nickname(을)를 입력 해주세요.";
+      return ResultData.from("F-4","nickname(을)를 입력 해주세요.");
     }
 
     if( Ut.empty(cellphoneNo) ){
-      return "cellphoneNo(을)를 입력 해주세요.";
+      return ResultData.from("F-5","cellphoneNo(을)를 입력 해주세요.");
     }
 
     if( Ut.empty(email) ){
-      return "email(을)를 입력 해주세요.";
+      return ResultData.from("F-6","email(을)를 입력 해주세요.");
     }
 
-    int id = memberService.join(loginId, loginPw, name, nickname, cellphoneNo, email);
-    //resultCode 로그인했는지 안했는지 결과를 알려주는 코드
+    // S-1
+    // 회원가입이 완료되었습니다.
+    // 7
+    ResultData joinRd = memberService.join(loginId, loginPw, name, nickname, cellphoneNo, email);
+    //ResultData 뒤에 Rd를 약어로 해서 붙인다.
 
-    //회원가입 중복 방지
-    if ( id == -1) {
+
+    if ( joinRd.isFail() ) {
+      return joinRd;
     }
 
-    if ( id == -2){
-      return Ut.f("해당 이름(%s)과 이메일(%s)은 이미 사용중입니다.", name, email);
-    }
+    Member member = memberService.getMemberById((int)joinRd.getData1()); //형변환 해줘야됨
 
-    Member member = memberService.getMemberById(id);
-
-    return member;
+    return ResultData.newData(joinRd, member);//
   }
 }

@@ -5,13 +5,13 @@ import lombok.Getter;
 public class ResultData {
 
   @Getter
-    private String resultCode;
+    private String resultCode;//결과코드
 
   @Getter
-  private String msg;
+  private String msg;//메시지
 
   @Getter
-  private Object data1;
+  private Object data1;//데이터
 
   private ResultData(){ //생성자
 
@@ -30,12 +30,20 @@ public class ResultData {
     return rd;
   }
 
+
+
   public boolean isSuccess() {
     return resultCode.startsWith("S-");
+
   }
+
 
   public boolean isFail(){
     return isSuccess() == false; //성공이 아니라면~!!
 
+  }
+
+  public static ResultData newData(ResultData joinRd, Object newData){
+    return from(joinRd.getResultCode(), joinRd.getMsg(), newData);
   }
 }
