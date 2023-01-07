@@ -1,13 +1,12 @@
-package com.example.demo.article.controller;
+package com.example.demo.controller;
 
-import com.example.demo.article.service.ArticleService;
-import com.example.demo.article.vo.Article;
+import com.example.demo.service.ArticleService;
+import com.example.demo.vo.Article;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller

@@ -1,8 +1,8 @@
-package com.example.demo.member.controller;
+package com.example.demo.controller;
 
-import com.example.demo.member.service.MemberService;
-import com.example.demo.member.util.Ut;
-import com.example.demo.member.vo.Member;
+import com.example.demo.service.MemberService;
+import com.example.demo.util.Ut;
+import com.example.demo.vo.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,8 @@ public class UsrMemberController {
   public Object doJoin(String loginId, String loginPw, String name, String nickname,
                        String cellphoneNo, String email) { //Object 나중에 코드 개선할꺼임!
 
-    int id = memberService.join(loginId, loginPw, name, nickname, cellphoneNo, email);
+
+
 
     if( Ut.empty(loginId) ){
       return "loginId(을)를 입력 해주세요.";
@@ -44,9 +45,15 @@ public class UsrMemberController {
       return "email(을)를 입력 해주세요.";
     }
 
+    int id = memberService.join(loginId, loginPw, name, nickname, cellphoneNo, email);
+    //resultCode 로그인했는지 안했는지 결과를 알려주는 코드
+
     //회원가입 중복 방지
     if ( id == -1) {
-        return "해당 로그인 아이디는 이미 사용중입니다.";
+    }
+
+    if ( id == -2){
+      return Ut.f("해당 이름(%s)과 이메일(%s)은 이미 사용중입니다.", name, email);
     }
 
     Member member = memberService.getMemberById(id);

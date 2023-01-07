@@ -1,7 +1,7 @@
-package com.example.demo.member.service;
+package com.example.demo.service;
 
-import com.example.demo.member.repository.MemberRepository;
-import com.example.demo.member.vo.Member;
+import com.example.demo.repository.MemberRepository;
+import com.example.demo.vo.Member;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,14 +15,26 @@ public class MemberService {
 
   public int join(String loginId, String loginPw, String name, String nickname, String cellphoneNo, String email) {
 
+    // 로그인 아이디 중복 체크
     Member oldMember = getMemberByLoginId(loginId);
 
     if( oldMember != null ){
       return -1; //로그인id가 있다면
     }
 
+    // 이름 + 이메일 중복 체크
+    oldMember = getMemberByNameAndEmail(name, email);
+
+    if( oldMember != null ){
+      return -2;//name과 email이 있다면
+    }
+
     memberRepository.join(loginId, loginPw, name, nickname, cellphoneNo, email);
     return memberRepository.getLastInsertId();
+  }
+
+  private Member getMemberByNameAndEmail(String name, String email) {
+    return memberRepository.getMemberByNameAndEmail(name, email);
   }
 
   private Member getMemberByLoginId(String loginId) {

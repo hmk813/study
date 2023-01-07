@@ -1,4 +1,4 @@
-package com.example.demo.member.util;
+package com.example.demo.util;
 
 public class Ut {
   public static boolean empty(Object obj) { //범용적으로 받으려고 Object로 했다.
@@ -14,5 +14,9 @@ public class Ut {
     String str = (String) obj;
 
     return str.trim().length() == 0;
+  }
+
+  public static String f(String format, Object... args) {
+    return String.format(format, args);
   }
 }

@@ -1,6 +1,6 @@
-package com.example.demo.member.repository;
+package com.example.demo.repository;
 
-import com.example.demo.member.vo.Member;
+import com.example.demo.vo.Member;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -47,5 +47,13 @@ public  interface MemberRepository {
                 from member AS M
                 WHERE M.loginId = #{loginId}
                 """)
-  Member getMemberByLoginId(String loginId);
+  Member getMemberByLoginId(@Param("loginId") String loginId);
+
+  @Select("""
+                SELECT *
+                from member AS M
+                WHERE M.name = #{name}
+                AND M.email = #{email}
+                """)
+  Member getMemberByNameAndEmail(@Param("name") String name, @Param("email") String email);
 }

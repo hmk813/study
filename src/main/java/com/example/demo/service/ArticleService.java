@@ -1,11 +1,9 @@
-package com.example.demo.article.service;
+package com.example.demo.service;
 
-import com.example.demo.article.repository.ArticleRepository;
-import com.example.demo.article.vo.Article;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.repository.ArticleRepository;
+import com.example.demo.vo.Article;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
