@@ -16,6 +16,7 @@ public class MemberService {
   public int join(String loginId, String loginPw, String name, String nickname, String cellphoneNo, String email) {
 
     Member oldMember = getMemberByLoginId(loginId);
+
     if( oldMember != null ){
       return -1; //로그인id가 있다면
     }
