@@ -2,7 +2,7 @@ package com.example.demo.vo;
 
 import lombok.Getter;
 
-public class ResultData {
+public class ResultData<DT> {
 
   @Getter
     private String resultCode;//결과코드
@@ -11,7 +11,7 @@ public class ResultData {
   private String msg;//메시지
 
   @Getter
-  private Object data1;//데이터
+  private DT data1;//데이터
 
   private ResultData(){ //생성자
 
@@ -21,8 +21,8 @@ public class ResultData {
     return from(resultCode, msg, null);
   }
 
-  public static ResultData from (String resultCode, String msg, Object data1){
-    ResultData rd = new ResultData();
+  public static <DT> ResultData<DT> from (String resultCode, String msg, DT data1){
+    ResultData<DT> rd = new ResultData<DT>();
     rd.resultCode = resultCode;
     rd.msg = msg;
     rd.data1 = data1;

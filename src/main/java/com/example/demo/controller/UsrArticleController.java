@@ -21,7 +21,8 @@ public class UsrArticleController {
   @RequestMapping("/usr/article/doAdd")
   @ResponseBody
   public ResultData doAdd(String title, String body) {
-    ResultData writeArticleRd = articleService.writeArticle(title, body); // ResultData 뒤에 Rd 붙여준다!
+
+    ResultData <Integer> writeArticleRd = articleService.writeArticle(title, body); // ResultData 뒤에 Rd 붙여준다!
       if( Ut.empty(title) ){
           return ResultData.from("F-1", "title을 입력해주세요.");
       }
@@ -42,7 +43,7 @@ public class UsrArticleController {
   public ResultData getArticles() {
     List<Article> articles = articleService.getArticles();
 
-    return ResultData.from("S-1","게시물 목록입니다.", articles);
+    return ResultData.from("S-1","게시물 리스트입니다.", articles);
   }
 
   @RequestMapping("/usr/article/getArticle")

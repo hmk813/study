@@ -48,7 +48,7 @@ public class UsrMemberController {
     // S-1
     // 회원가입이 완료되었습니다.
     // 7
-    ResultData joinRd = memberService.join(loginId, loginPw, name, nickname, cellphoneNo, email);
+    ResultData<Integer> joinRd = memberService.join(loginId, loginPw, name, nickname, cellphoneNo, email);
     //ResultData 뒤에 Rd를 약어로 해서 붙인다.
 
 
@@ -56,7 +56,7 @@ public class UsrMemberController {
       return joinRd;
     }
 
-    Member member = memberService.getMemberById((int)joinRd.getData1()); //형변환 해줘야됨
+    Member member = memberService.getMemberById(joinRd.getData1()); //getData 들어오는 방식이 Object방식이라 int로 꼭 형변환을 해줘야됨
 
     return ResultData.newData(joinRd, member);//
   }
