@@ -18,7 +18,7 @@ public class UsrMemberController {
 
   @RequestMapping("/usr/member/doJoin")
   @ResponseBody
-  public ResultData doJoin(String loginId, String loginPw, String name, String nickname,
+  public ResultData<Member> doJoin(String loginId, String loginPw, String name, String nickname,
                            String cellphoneNo, String email) { //Object -> ResultData로 코드 개선
 
     if( Ut.empty(loginId) ){
@@ -53,7 +53,7 @@ public class UsrMemberController {
 
 
     if ( joinRd.isFail() ) {
-      return joinRd;
+      return (ResultData) joinRd;
     }
 
     Member member = memberService.getMemberById(joinRd.getData1()); //getData 들어오는 방식이 Object방식이라 int로 꼭 형변환을 해줘야됨
