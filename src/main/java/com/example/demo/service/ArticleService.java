@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.repository.ArticleRepository;
+import com.example.demo.util.Ut;
 import com.example.demo.vo.Article;
+import com.example.demo.vo.ResultData;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +17,11 @@ public class ArticleService {
     this.articleRepository = articleRepository;
   }
 
-  public int writeArticle(String title, String body) {
+  public ResultData writeArticle(String title, String body) {
     articleRepository.writeArticle(title, body);
-    return articleRepository.getLastInsertId();
+    int id = articleRepository.getLastInsertId();
+
+    return ResultData.from("S-1", Ut.f("%d번 게시물이 생성되었습니다.", id), id);
   }
 
   public List<Article> getArticles() {

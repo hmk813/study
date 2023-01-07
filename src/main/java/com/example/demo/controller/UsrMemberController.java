@@ -18,9 +18,6 @@ public class UsrMemberController {
   public Object doJoin(String loginId, String loginPw, String name, String nickname,
                        String cellphoneNo, String email) { //Object 나중에 코드 개선할꺼임!
 
-
-
-
     if( Ut.empty(loginId) ){
       return "loginId(을)를 입력 해주세요.";
     }
