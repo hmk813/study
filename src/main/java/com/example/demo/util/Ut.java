@@ -1,6 +1,6 @@
 package com.example.demo.util;
 
-public class Ut {
+public class Ut { //간편하게 해주려고 유틸리티 Ut를 만들었다!
   public static boolean empty(Object obj) { //범용적으로 받으려고 Object로 했다.
     if(obj == null){
       return true;
