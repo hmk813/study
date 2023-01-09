@@ -68,7 +68,7 @@ public class UsrMemberController {
 
     boolean isLogined = false;
 
-    if(httpSession.getAttribute("loginedMemberId") != null){
+    if(httpSession.getAttribute("loginedMemberId") != null){ //로그인되어있는것 != null이 아니란것
        isLogined = true;
     }
 
@@ -94,8 +94,27 @@ public class UsrMemberController {
       return ResultData.from("F-4","비밀번호가 일치하지 않습니다.");
     }
 
-    httpSession.setAttribute("loginedMemberId", member.getId());//HttpSession
+    httpSession.setAttribute("loginedMemberId", member.getId());//세션 설정
 
     return ResultData.from("S-1", Ut.f("%s님 환영합니다.", member.getNickname()));//
+  }
+
+  @RequestMapping("/usr/member/doLogout")
+  @ResponseBody
+  public ResultData<Member> doLogout(HttpSession httpSession) { //Object -> ResultData로 코드 개선
+
+    boolean isLogined = false;
+
+    if(httpSession.getAttribute("loginedMemberId") == null){ //이미 null이다(이미 로그아웃상태다)
+      isLogined = true;
+    }
+
+    if( isLogined ){
+      return ResultData.from("S-1","이미 로그아웃 상태입니다.");
+    }
+
+    httpSession.removeAttribute("loginedMemberId"); //세션 삭제
+
+    return ResultData.from("S-2", "로그아웃 되었습니다.");//
   }
 }
