@@ -59,7 +59,7 @@ public class UsrMemberController {
 
     Member member = memberService.getMemberById(joinRd.getData1()); //getData 들어오는 방식이 Object방식이라 int로 꼭 형변환을 해줘야됨
 
-    return ResultData.newData(joinRd, member);//
+    return ResultData.newData(joinRd, "member", member);//
   }
 
   @RequestMapping("/usr/member/doLogin")
