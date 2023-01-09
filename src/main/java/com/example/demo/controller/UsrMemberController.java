@@ -68,7 +68,7 @@ public class UsrMemberController {
 
     boolean isLogined = false;
 
-    if(httpSession.getAttribute("loginedMemberId") != null){ //로그인되어있는것 != null이 아니란것
+    if(httpSession.getAttribute("loginedMemberId") != null){ //로그인되어있는것 != null이 아니란것  ,
        isLogined = true;
     }
 

@@ -80,4 +80,10 @@ nickname = 'user2',`article``member`
 cellphoneNo = '01033334444',
 email = 'moonkyus@hanmail.net';
 
+#게시물 테이블에 회원정보 추가
+ALTER TABLE article ADD COLUMN memberId INT(10) UNSIGNED NOT NULL AFTER updateDate;
 
+#기존 게시물에 작성자를 2번으로 지정
+UPDATE article
+SET memberId = 2
+WHERE memberId = 0;

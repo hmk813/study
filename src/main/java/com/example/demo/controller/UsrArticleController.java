@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -20,19 +21,31 @@ public class UsrArticleController {
   //액션 메서드 시작
   @RequestMapping("/usr/article/doAdd")
   @ResponseBody
-  public ResultData<Article> doAdd(String title, String body) {
+  public ResultData<Article> doAdd(HttpSession httpSession, String title, String body) {
 
-    if( Ut.empty(title) ){
+    boolean isLogined = false;
+    int loginedMemberId = 0;
+
+    if (httpSession.getAttribute("loginedMemberId") != null) { //로그인되어있는것 != null이 아니란것  , 세션가져오기
+      isLogined = true;
+      loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");//Object로 들어가기때문에 int로 형변환 해준다.
+    }
+
+    if (isLogined == false) {
+      return ResultData.from("F-A", "로그인 후 이용해주세요.");
+    }
+
+    if (Ut.empty(title)) {
       return ResultData.from("F-1", "title을 입력해주세요.");
     }
 
-    if( Ut.empty(body) ){
+    if (Ut.empty(body)) {
       return ResultData.from("F-2", "body(을)를 입력해주세요.");
     }
 
-    ResultData <Integer> writeArticleRd = articleService.writeArticle(title, body); // ResultData 뒤에 Rd 붙여준다!
+    ResultData<Integer> writeArticleRd = articleService.writeArticle(loginedMemberId, title, body); // ResultData 뒤에 Rd 붙여준다!
 
-    int id = (int)writeArticleRd.getData1(); //형변환 필요!
+    int id = (int) writeArticleRd.getData1(); //형변환 필요!
 
     Article article = articleService.getArticle(id);
 
@@ -44,7 +57,7 @@ public class UsrArticleController {
   public ResultData<List<Article>> getArticles() {
     List<Article> articles = articleService.getArticles();
 
-    return ResultData.from("S-1","게시물 리스트입니다.", articles);
+    return ResultData.from("S-1", "게시물 리스트입니다.", articles);
   }
 
   @RequestMapping("/usr/article/getArticle")
@@ -52,44 +65,77 @@ public class UsrArticleController {
   public ResultData<Article> getArticle(int id) {
     Article article = articleService.getArticle(id);
 
-    if( article == null ){
+    if (article == null) {
       return ResultData.from("F-1", Ut.f("%d번 게시물이 존재하지 않습니다.", id)); //실패
 
     }
 
-    return ResultData.from("S-1",Ut.f("%d번 게시물입니다.", id), article);//성공
+    return ResultData.from("S-1", Ut.f("%d번 게시물입니다.", id), article);//성공
   }
 
   @RequestMapping("/usr/article/doDelete")
   @ResponseBody
-  public ResultData<Integer> doDelete(int id) {
+  public ResultData<Integer> doDelete(HttpSession httpSession, int id) {
+
+    boolean isLogined = false;
+    int loginedMemberId = 0;
+
+    if (httpSession.getAttribute("loginedMemberId") != null) { //로그인되어있는것 != null이 아니란것  , 세션가져오기
+      isLogined = true;
+      loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");//Object로 들어가기때문에 int로 형변환 해준다.
+    }
+
+    if (isLogined == false) {
+      return ResultData.from("F-A", "로그인 후 이용해주세요.");
+    }
+
     Article article = articleService.getArticle(id);
 
-    if( article == null ) {
+    if (article.getMemberId() != loginedMemberId) { //로그인아이디랑 멤버아이디랑 다르면 권한이 없다고 해야함
+      return ResultData.from("F-2", "권한이 없습니다.");
+    }
+
+    if (article == null) {
       return ResultData.from("F-1", Ut.f("%d번 게시물이 존재하지 않습니다.", id)); //실패
     }
 
     articleService.deleteArticle(id);
 
-    return ResultData.from("S-1",Ut.f("%d번 게시물을 삭제하였습니다.", id), id);//성공
+    return ResultData.from("S-1", Ut.f("%d번 게시물을 삭제하였습니다.", id), id);//성공
   }
 
 
   @RequestMapping("/usr/article/doModify")
   @ResponseBody
-  public ResultData doModify(int id,String title, String body) {
-    Article article = articleService.getArticle(id);
+  public ResultData<Article> doModify(HttpSession httpSession, int id, String title, String body) {
 
-    if( article == null ) {
-      return ResultData.from("F-1", Ut.f("%d번 게시물이 존재하지 않습니다.", id));
+
+    boolean isLogined = false;
+    int loginedMemberId = 0;
+
+    if (httpSession.getAttribute("loginedMemberId") != null) { //로그인되어있는것 != null이 아니란것  , 세션가져오기
+      isLogined = true;
+      loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");//Object로 들어가기때문에 int로 형변환 해준다.
     }
 
-    articleService.modifyArticle(id, title, body);
+    if (isLogined == false) {
+      return ResultData.from("F-A", "로그인 후 이용해주세요.");
+    }
 
-    return ResultData.from("S-1",Ut.f("%d번 게시물을 수정하였습니다.", id), id);
-  }
+    Article article = articleService.getArticle(id);
 
+    if (article.getMemberId() != loginedMemberId) { //로그인아이디랑 멤버아이디랑 다르면 권한이 없다고 해야함
+      return ResultData.from("F-2", "권한이 없습니다.");
+    }
 
-  //액션 메서드 끝
+    ResultData actorCanModifyRd = articleService.actorCanModify(loginedMemberId, article);//수정할 수 있다.
+
+    if(actorCanModifyRd.isFail()){
+      return actorCanModifyRd;
+    }
+
+    return articleService.modifyArticle(id, title, body);
+    }
 
 }
+
