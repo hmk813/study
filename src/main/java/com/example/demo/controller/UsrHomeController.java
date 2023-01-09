@@ -10,8 +10,13 @@ public class UsrHomeController {
 
   @RequestMapping("/usr/home/main")
   @ResponseBody
-  public String main(){
-    return "안녕";
+  public String showMain(){
+    return "usr/home/main";
+  }
+
+  @RequestMapping("/") 
+  public String showRoot(){
+    return "redirect:/usr/home/main";
   }
 }
 
