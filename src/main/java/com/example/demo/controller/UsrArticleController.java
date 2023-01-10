@@ -53,7 +53,7 @@ public class UsrArticleController {
     return ResultData.newData(writeArticleRd, "article", article);
   }
 
-  @RequestMapping("/usr/article/list")
+  @RequestMapping("/usr/article/list")//리스트로 바꿔줌
   public String showList(Model model) {// Model model 암기!
     List<Article> articles = articleService.getArticles();
 
@@ -62,17 +62,15 @@ public class UsrArticleController {
     return "usr/article/list";
   }
 
-  @RequestMapping("/usr/article/getArticle")
-  @ResponseBody
-  public ResultData<Article> getArticle(int id) {
+  @RequestMapping("/usr/article/detail")//상세보기로 바꿔줌
+  public String showDetail(Model model, int id) {
+
     Article article = articleService.getArticle(id);
 
-    if (article == null) {
-      return ResultData.from("F-1", Ut.f("%d번 게시물이 존재하지 않습니다.", id)); //실패
+    model.addAttribute("article", article);
 
-    }
+    return "usr/article/detail";
 
-    return ResultData.from("S-1", Ut.f("%d번 게시물입니다.", id),  "article", article);//성공
   }
 
   @RequestMapping("/usr/article/doDelete")
