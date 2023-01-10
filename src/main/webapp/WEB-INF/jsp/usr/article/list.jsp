@@ -8,6 +8,12 @@
   <div class="container mx-auto px-3">
     <div class="table-box-type-1">
       <table border="1">
+        <colgroup>
+          <col width="80" />
+          <col width="150" />
+          <col width="150" />
+          <col width="150" />
+        </colgroup>
         <thead>
         <tr>
           <th>번호</th>
@@ -23,9 +29,9 @@
             <th>${article.id}</th>
             <th>${article.regDate.substring(2, 16)}</th>
             <th>${article.updateDate.substring(2, 16)}</th>
-            <th>${article.memberId}</th>
+            <th>${article.extra__writerName}</th>
             <th>
-              <a href="../article/detail?id=${article.id}" class="hover:underline">${article.title}
+              <a class="hover:underline" href="../article/detail?id=${article.id}" >${article.title}
             </th>
           </tr>
         </c:forEach>
