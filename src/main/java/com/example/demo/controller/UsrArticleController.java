@@ -48,14 +48,23 @@ public class UsrArticleController {
 
     int id = (int) writeArticleRd.getData1(); //형변환 필요!
 
-    Article article = articleService.getArticle(id);
+    Article article = articleService.getForPrintArticle(loginedMemberId, id);
 
     return ResultData.newData(writeArticleRd, "article", article);
   }
 
   @RequestMapping("/usr/article/list")//리스트로 바꿔줌
-  public String showList(Model model) {// Model model 암기!
-    List<Article> articles = articleService.getArticles();
+  public String showList(HttpSession httpSession, Model model) {// Model model 암기!
+
+    boolean isLogined = false;
+    int loginedMemberId = 0;
+
+    if (httpSession.getAttribute("loginedMemberId") != null) { //로그인되어있는것 != null이 아니란것  , 세션가져오기
+      isLogined = true;
+      loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");//Object로 들어가기때문에 int로 형변환 해준다.
+    }
+
+    List<Article> articles = articleService.getForPrintArticles(loginedMemberId);
 
     model.addAttribute("articles", articles); //역시 암기! JSP로 보내준다
 
@@ -63,9 +72,17 @@ public class UsrArticleController {
   }
 
   @RequestMapping("/usr/article/detail")//상세보기로 바꿔줌
-  public String showDetail(Model model, int id) {
+  public String showDetail(HttpSession httpSession, Model model, int id) {
 
-    Article article = articleService.getArticle(id);
+    boolean isLogined = false;
+    int loginedMemberId = 0;
+
+    if (httpSession.getAttribute("loginedMemberId") != null) { //로그인되어있는것 != null이 아니란것  , 세션가져오기
+      isLogined = true;
+      loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");//Object로 들어가기때문에 int로 형변환 해준다.
+    }
+
+    Article article = articleService.getForPrintArticle(loginedMemberId, id);
 
     model.addAttribute("article", article);
 
@@ -75,7 +92,7 @@ public class UsrArticleController {
 
   @RequestMapping("/usr/article/doDelete")
   @ResponseBody
-  public ResultData<Integer> doDelete(HttpSession httpSession, int id) {
+  public String doDelete(HttpSession httpSession, int id) {
 
     boolean isLogined = false;
     int loginedMemberId = 0;
@@ -86,22 +103,22 @@ public class UsrArticleController {
     }
 
     if (isLogined == false) {
-      return ResultData.from("F-A", "로그인 후 이용해주세요.");
+      return Ut.jsHistoryBack("로그인 후 이용해주세요.");
     }
 
-    Article article = articleService.getArticle(id);
+    Article article = articleService.getForPrintArticle(loginedMemberId, id);
 
     if (article.getMemberId() != loginedMemberId) { //로그인아이디랑 멤버아이디랑 다르면 권한이 없다고 해야함
-      return ResultData.from("F-2", "권한이 없습니다.");
+      return Ut.jsHistoryBack( "권한이 없습니다.");
     }
 
     if (article == null) {
-      return ResultData.from("F-1", Ut.f("%d번 게시물이 존재하지 않습니다.", id)); //실패
+      return Ut.jsHistoryBack(Ut.f("%d번 게시물이 존재하지 않습니다.", id)); //실패
     }
 
     articleService.deleteArticle(id);
 
-    return ResultData.from("S-1", Ut.f("%d번 게시물을 삭제하였습니다.", id), "id", id);//성공
+    return Ut.jsReplace(Ut.f("%d번 게시물을 삭제하였습니다.", id), "../article/list");//성공
   }
 
 
@@ -122,7 +139,7 @@ public class UsrArticleController {
       return ResultData.from("F-A", "로그인 후 이용해주세요.");
     }
 
-    Article article = articleService.getArticle(id);
+    Article article = articleService.getForPrintArticle(loginedMemberId, id);
 
     if (article.getMemberId() != loginedMemberId) { //로그인아이디랑 멤버아이디랑 다르면 권한이 없다고 해야함
       return ResultData.from("F-2", "권한이 없습니다.");

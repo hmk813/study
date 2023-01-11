@@ -19,11 +19,15 @@ public interface ArticleRepository {
   public void writeArticle(@Param("memberId") int memberId, @Param("title") String title, @Param("body") String body);
 
   @Select("""
-                SELECT * 
-                FROM article 
-                WHERE id = #{id}
+                SELECT A.*,
+                M.nickname AS extra__writerName
+                FROM article AS A
+                LEFT JOIN member AS M
+                ON A.memberId = M.id
+                WHERE 1
+                AND A.id = #{id}
                 """)
-  public Article getArticle(@Param("id") int id);
+  public Article getForPrintArticle(@Param("id") int id);
 
   @Delete("""
                  DELETE 
@@ -34,13 +38,13 @@ public interface ArticleRepository {
 
   @Select("""
                 SELECT A.*,
-                M.nickname AS extra__writerName 
+                M.nickname AS extra__writerName
                 FROM article AS A
-                LEFT JOIN member AS M 
+                LEFT JOIN member AS M
                 ON A.memberId = M.id
                 ORDER BY A.id DESC
                 """)
-  public List<Article> getArticles();
+  public List<Article> getForPrintArticles();
 
   @Update("""
                   <script>
@@ -61,4 +65,5 @@ public interface ArticleRepository {
 
   @Select("SELECT LAST_INSERT_ID()")
   public int getLastInsertId();
+
 }
