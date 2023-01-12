@@ -68,4 +68,8 @@ public class Rq {
   public void login(Member member) {
     session.setAttribute("loginedMemberId", member.getId()); //세션 설정
   }
+
+  public void logout() {
+    session.removeAttribute("loginedMemberId"); //세션에서 삭제처리
+  }
 }
