@@ -25,7 +25,7 @@ public class UsrArticleController {
   @RequestMapping("/usr/article/doAdd")
   @ResponseBody
   public ResultData<Article> doAdd(HttpServletRequest req, String title, String body) {//HttpSession을 HttpServletRequest로 바꾼다.
-    Rq rq = new Rq(req);
+    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
     if (rq.isLogined() == false) {
       return ResultData.from("F-A", "로그인 후 이용해주세요.");
@@ -51,7 +51,7 @@ public class UsrArticleController {
   @RequestMapping("/usr/article/list")//리스트로 바꿔줌
   public String showList(HttpServletRequest req, Model model) {// Model model 암기!
 
-    Rq rq = new Rq(req);
+    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
     List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId());
 
@@ -63,7 +63,7 @@ public class UsrArticleController {
   @RequestMapping("/usr/article/detail")//상세보기로 바꿔줌
   public String showDetail(HttpServletRequest req, Model model, int id) {
 
-    Rq rq = new Rq(req);
+    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
     Article article = articleService.getForPrintArticle(rq.getLoginedMemberId(), id);
 
@@ -77,7 +77,7 @@ public class UsrArticleController {
   @ResponseBody
   public String doDelete(HttpServletRequest req, int id) {
 
-    Rq rq = new Rq(req);
+    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
     if (rq.isLogined() == false) {
       return Ut.jsHistoryBack("로그인 후 이용해주세요.");
@@ -103,7 +103,7 @@ public class UsrArticleController {
   @ResponseBody
   public ResultData<Article> doModify(HttpServletRequest req, int id, String title, String body) {
 
-    Rq rq = new Rq(req);
+    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
     if (rq.isLogined() == false) {
       return ResultData.from("F-A", "로그인 후 이용해주세요.");
