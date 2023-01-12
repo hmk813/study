@@ -4,11 +4,13 @@ import com.example.demo.service.MemberService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.ResultData;
+import com.example.demo.vo.Rq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -68,15 +70,11 @@ public class UsrMemberController {
 
   @RequestMapping("/usr/member/doLogin")
   @ResponseBody
-  public String doLogin(HttpSession httpSession, String loginId, String loginPw) { //Object -> ResultData로 코드 개선
+  public String doLogin(HttpServletRequest req, String loginId, String loginPw) { //Object -> ResultData로 코드 개선
 
-    boolean isLogined = false;
+    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
-    if(httpSession.getAttribute("loginedMemberId") != null){ //로그인되어있는것 != null이 아니란것  ,
-       isLogined = true;
-    }
-
-    if( isLogined ){
+    if( rq.isLogined() ){
       return Ut.jsHistoryBack("이미 로그인되었습니다.");
     }
 
@@ -98,7 +96,8 @@ public class UsrMemberController {
       return Ut.jsHistoryBack("비밀번호가 일치하지 않습니다.");
     }
 
-    httpSession.setAttribute("loginedMemberId", member.getId());//세션 설정
+    //httpSession.setAttribute("loginedMemberId", member.getId());//세션 설정->이거를 이제 rq로 위임한다!
+    rq.login(member);
 
     return Ut.jsReplace(Ut.f("%s님 환영합니다.", member.getNickname()), "/");//
   }
