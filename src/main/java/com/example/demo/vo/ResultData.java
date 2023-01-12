@@ -1,7 +1,9 @@
 package com.example.demo.vo;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class ResultData<DT> {
 
   @Getter
@@ -11,14 +13,10 @@ public class ResultData<DT> {
   private String msg;//메시지
 
   @Getter
-  private DT data1;//데이터
-
-  @Getter
   private String data1Name;
 
-  private ResultData(){ //생성자
-
-  }
+  @Getter
+  private DT data1;//데이터
 
   public static ResultData from(String resultCode, String msg){
     return from(resultCode, msg, null, null);

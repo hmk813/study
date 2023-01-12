@@ -1,5 +1,6 @@
 package com.example.demo.interceptor;
 
+import com.example.demo.vo.Rq;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -10,10 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 public class NeedLoginInterceptor implements HandlerInterceptor {
 
   @Override
-  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+  public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handle) throws Exception {
 
-    System.out.println("로그인 필요");
+    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
-    return HandlerInterceptor.super.preHandle(request, response, handler);
+   if( !rq.isLogined() ){ //로그인이 안되어있다면 로그인후 이용해주세요라고 해라!
+     rq.printHistoryBackJs("로그인 후 이용해주세요.");
+     return false;
+   }
+
+    return HandlerInterceptor.super.preHandle(req, resp, handle);
   }
 }
