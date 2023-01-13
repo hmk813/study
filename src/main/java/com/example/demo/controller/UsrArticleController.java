@@ -98,6 +98,26 @@ public class UsrArticleController {
     return Ut.jsReplace(Ut.f("%d번 게시물을 삭제하였습니다.", id), "../article/list");//성공
   }
 
+  @RequestMapping("/usr/article/modify")
+  public String showModify(HttpServletRequest req, Model model, int id) {
+    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
+
+    Article article = articleService.getForPrintArticle(rq.getLoginedMemberId() , id);
+
+    if( article == null ){
+      return rq.historyBackJsOnView(Ut.f("%번 게시물이 존재하지 않습니다.", id));
+    }
+
+    ResultData actorCanModifyRd = articleService.actorCanModify(rq.getLoginedMemberId(), article);//수정할 수 있다.
+
+    if(actorCanModifyRd.isFail()){
+      return rq.historyBackJsOnView(actorCanModifyRd.getMsg());//일치하지 않으면 권한이 없다!
+    }
+
+    model.addAttribute("article", article);
+
+    return "usr/article/modify";
+  }
 
   @RequestMapping("/usr/article/doModify")
   @ResponseBody
@@ -113,6 +133,10 @@ public class UsrArticleController {
 
     if (article.getMemberId() != rq.getLoginedMemberId()) { //로그인아이디랑 멤버아이디랑 다르면 권한이 없다고 해야함
       return ResultData.from("F-2", "권한이 없습니다.");
+    }
+
+    if( article == null ){
+        return ResultData.from("F-1", Ut.f("%번 게시물이 존재하지 않습니다.", id));
     }
 
     ResultData actorCanModifyRd = articleService.actorCanModify(rq.getLoginedMemberId(), article);//수정할 수 있다.
