@@ -104,17 +104,17 @@ public class UsrMemberController {
 
   @RequestMapping("/usr/member/doLogout")
   @ResponseBody
-  public ResultData<Member> doLogout(HttpServletRequest req) { //Object -> ResultData로 코드 개선
+  public String doLogout(HttpServletRequest req) { //Object -> ResultData로 코드 개선
 
     Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
     if( !rq.isLogined() ){//로그인된 상태가 아니라면 -> 즉, 이미 로그아웃 상태
-      return ResultData.from("S-1","이미 로그아웃 상태입니다.");
+      return Ut.jsHistoryBack("이미 로그아웃 상태입니다.");
     }
 
     //httpSession.removeAttribute("loginedMemberId"); //세션 삭제
     rq.logout();//rq에다가 위임한다
 
-    return ResultData.from("S-2", "로그아웃 되었습니다.");//
+    return Ut.jsReplace(Ut.f("로그아웃 되었습니다."), "/");//
   }
 }

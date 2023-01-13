@@ -76,7 +76,7 @@ updateDate = NOW(),
 loginId = 'user2',
 loginPw = 'user2',
 NAME = 'user2',
-nickname = 'user2',`article``member`
+nickname = 'user2',
 cellphoneNo = '01033334444',
 email = 'moonkyus@hanmail.net';
 

@@ -20,7 +20,7 @@ public class Ut { //간편하게 해주려고 유틸리티 Ut를 만들었다!
     return String.format(format, args);
   }
 
-  public static String jsHistoryBack(String msg) {
+  public static String jsHistoryBack(String msg) { //뒤로가기@@!
 
     if( msg == null ){
       msg = "";
@@ -37,7 +37,7 @@ public class Ut { //간편하게 해주려고 유틸리티 Ut를 만들었다!
                 """, msg);
   }
 
-  public static String jsReplace(String msg, String uri) {
+  public static String jsReplace(String msg, String uri) { //돌려보내는 것!
     if( msg == null ){
       msg = "";
     }
