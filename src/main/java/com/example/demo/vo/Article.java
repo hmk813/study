@@ -1,12 +1,10 @@
 package com.example.demo.vo;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Article {
   private int id;
   private String regDate;
@@ -16,6 +14,13 @@ public class Article {
   private String body;
 
   private String extra__writerName;
-
+  private boolean extra__actorCanModify;
   private boolean extra__actorCanDelete;
+
+  public String getRegDateForPrint() {
+    return regDate.substring(2, 16);
+  }
+  public String getUpdateDateForPrint() {
+    return updateDate.substring(2, 16);
+  }
 }

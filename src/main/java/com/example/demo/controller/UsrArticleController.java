@@ -121,31 +121,33 @@ public class UsrArticleController {
 
   @RequestMapping("/usr/article/doModify")
   @ResponseBody
-  public ResultData<Article> doModify(HttpServletRequest req, int id, String title, String body) {
+  public String doModify(HttpServletRequest req, int id, String title, String body) {
 
     Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
-    if (rq.isLogined() == false) {
-      return ResultData.from("F-A", "로그인 후 이용해주세요.");
+    if (  rq.isLogined() == false ) {
+      return Ut.jsHistoryBack("로그인 후 이용해주세요.");
     }
 
     Article article = articleService.getForPrintArticle(rq.getLoginedMemberId() , id);
 
     if (article.getMemberId() != rq.getLoginedMemberId()) { //로그인아이디랑 멤버아이디랑 다르면 권한이 없다고 해야함
-      return ResultData.from("F-2", "권한이 없습니다.");
+      return Ut.jsHistoryBack("권한이 없습니다.");
     }
 
     if( article == null ){
-        return ResultData.from("F-1", Ut.f("%번 게시물이 존재하지 않습니다.", id));
+        return Ut.jsHistoryBack(Ut.f("%번 게시물이 존재하지 않습니다.", id));
     }
 
     ResultData actorCanModifyRd = articleService.actorCanModify(rq.getLoginedMemberId(), article);//수정할 수 있다.
 
     if(actorCanModifyRd.isFail()){
-      return actorCanModifyRd;
+      return Ut.jsHistoryBack(actorCanModifyRd.getMsg());
     }
 
-    return articleService.modifyArticle(id, title, body);
+    articleService.modifyArticle(id, title, body);
+
+    return Ut.jsReplace(Ut.f("%d번 게시물이 수정되었습니다.", id), Ut.f("../article/detail?id=%d", id));
     }
 
 }

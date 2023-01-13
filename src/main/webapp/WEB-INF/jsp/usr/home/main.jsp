@@ -6,7 +6,7 @@
 
 <section class="mt-5">
   <div class="container mx-auto px-3">
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur at est explicabo numquam qui suscipit. Incidunt iusto maxime, minima odio officiis similique veritatis. Dolorem eum laborum minus mollitia nihil rem!
+    문규의 게시판에 온 것을 환영하무니다!!!>_< 꼭 노력해서 최고의 개발자가 되겠습니다용
   </div>
 </section>
 
