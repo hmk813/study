@@ -76,10 +76,16 @@ public class UsrArticleController {
 
     int articlesCount = articleService.getArticlesCount(boardId); //게시물리스트에 게시물 개수 표시 추가!
 
+    // 20개 2페이지
+    // 27개 3페이지
+
     int itemsCountInAPage = 10; //하나의 페이지에 10개를 카운트한다.
+    int pagesCount = (int)Math.ceil( (double) articlesCount / itemsCountInAPage);//소수점 반올림 해야되서 Math.ceil 사용해야됨->페이지는 정수로 나와야 하기 때문에 -> 형변환도 해줘야한다 쉽지않다.
     List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId(), boardId, itemsCountInAPage, page);
 
-    model.addAttribute("board",board); //게시판을 만들었으니 추가해준다.
+    model.addAttribute("boardId", boardId);
+    model.addAttribute("pagesCount", pagesCount);
+    model.addAttribute("page", page);
     model.addAttribute("articlesCount", articlesCount);
     model.addAttribute("articles", articles); //역시 암기! JSP로 보내준다
 

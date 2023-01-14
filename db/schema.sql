@@ -1,7 +1,7 @@
 # DB 생성
-DROP DATABASE IF EXISTS sb_app_2022_t;
-CREATE DATABASE sb_app_2022_t;
-USE sb_app_2022_t;
+DROP DATABASE IF EXISTS `board`;
+CREATE DATABASE `board`;
+USE `board`;
 
 # 게시물 테이블 생성
 CREATE TABLE article (
@@ -68,7 +68,7 @@ loginPw = 'user1',
 `name` = 'user1',
 `nickname` = 'user1',
 cellphoneNo = '01011111111',
-email = 'gotkdqja@gmail.com';
+email = 'moonkyus@hanmail.com';
 
 INSERT INTO `member`
 SET regDate = NOW(),
@@ -78,7 +78,7 @@ loginPw = 'user2',
 `name` = 'user2',
 `nickname` = 'user2',
 cellphoneNo = '01011111111',
-email = 'gotkdqja@gmail.com';
+email = 'moonkyus@hanmail.com';
 
 # 게시물 테이블에 회원정보 추가
 ALTER TABLE article ADD COLUMN memberId INT(10) UNSIGNED NOT NULL AFTER `updateDate`;
@@ -126,7 +126,7 @@ UPDATE article
 SET boardId = 2
 WHERE id IN(3);
 
-#게시물 개수 늘리기(게시물 페이징을 위한)
+#게시물 개수 늘리기
 /*
 Insert into article
 (
@@ -134,4 +134,7 @@ Insert into article
 )
 select now(), now(), floor(RAND() * 2)+1, FLOOR(RAND() * 2)+1, concat('제목_', RAND()), CONCAT('내용_', RAND())
 from article;
+
 */
+
+
