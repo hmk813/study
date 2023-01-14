@@ -19,10 +19,17 @@ import java.util.List;
 @Controller
 public class UsrArticleController {
 
-  @Autowired
+  //요샌 Autowired 안하고 생성자를 만드는 추세이다.
   private ArticleService articleService;
-  @Autowired
   private BoardService boardService;
+  private Rq rq;
+
+  //생성자 선언
+  public UsrArticleController(ArticleService articleService, BoardService boardService, Rq rq) {
+    this.articleService = articleService;
+    this.boardService = boardService;
+    this.rq = rq;
+  }
 
   @RequestMapping("/usr/article/write")
   public String showWrite(HttpServletRequest req) {
@@ -32,8 +39,7 @@ public class UsrArticleController {
   //액션 메서드 시작
   @RequestMapping("/usr/article/doWrite")
   @ResponseBody
-  public String doWrite(HttpServletRequest req, String title, String body, String replaceUri) {//HttpSession을 HttpServletRequest로 바꾼다.
-    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
+  public String doWrite(String title, String body, String replaceUri) {//HttpSession을 HttpServletRequest로 바꾼다.
 
     if (  rq.isLogined() == false ) {
       return rq.jsHistoryBack("로그인 후 이용해주세요.");
@@ -59,9 +65,7 @@ public class UsrArticleController {
   }
 
   @RequestMapping("/usr/article/list")//리스트로 바꿔줌
-  public String showList(HttpServletRequest req, Model model, int boardId) {// Model model 암기!
-
-    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
+  public String showList(Model model, int boardId) {// Model model 암기!
 
     Board board = boardService.getBoardById(boardId);
 
@@ -80,10 +84,7 @@ public class UsrArticleController {
   }
 
   @RequestMapping("/usr/article/detail")//상세보기로 바꿔줌
-  public String showDetail(HttpServletRequest req, Model model, int id) {
-
-    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
-
+  public String showDetail(Model model, int id) {
     Article article = articleService.getForPrintArticle(rq.getLoginedMemberId(), id);
 
     model.addAttribute("article", article);
@@ -94,9 +95,7 @@ public class UsrArticleController {
 
   @RequestMapping("/usr/article/doDelete")
   @ResponseBody
-  public String doDelete(HttpServletRequest req, int id) {
-
-    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
+  public String doDelete(int id) {
 
     if (rq.isLogined() == false) {
       return rq.jsHistoryBack("로그인 후 이용해주세요.");
@@ -118,8 +117,7 @@ public class UsrArticleController {
   }
 
   @RequestMapping("/usr/article/modify")
-  public String showModify(HttpServletRequest req, Model model, int id) {
-    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
+  public String showModify(Model model, int id) {
 
     Article article = articleService.getForPrintArticle(rq.getLoginedMemberId() , id);
 
@@ -140,9 +138,7 @@ public class UsrArticleController {
 
   @RequestMapping("/usr/article/doModify")
   @ResponseBody
-  public String doModify(HttpServletRequest req, int id, String title, String body) {
-
-    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
+  public String doModify(int id, String title, String body) {
 
     if (  rq.isLogined() == false ) {
       return rq.jsHistoryBack("로그인 후 이용해주세요.");

@@ -15,8 +15,15 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class UsrMemberController {
-  @Autowired
+
+  //요새는 Autowired안하고 생성자를 추가해주는 추세이다. 자기마음이다!
   private MemberService memberService;
+  private Rq rq;
+
+  public UsrMemberController(MemberService memberService, Rq rq) {
+    this.memberService = memberService;
+    this.rq = rq;
+  }
 
   @RequestMapping("/usr/member/doJoin")
   @ResponseBody
@@ -70,9 +77,7 @@ public class UsrMemberController {
 
   @RequestMapping("/usr/member/doLogin")
   @ResponseBody
-  public String doLogin(HttpServletRequest req, String loginId, String loginPw) { //Object -> ResultData로 코드 개선
-
-    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
+  public String doLogin(String loginId, String loginPw) { //Object -> ResultData로 코드 개선
 
     if( rq.isLogined() ){
       return Ut.jsHistoryBack("이미 로그인되었습니다.");
@@ -104,9 +109,7 @@ public class UsrMemberController {
 
   @RequestMapping("/usr/member/doLogout")
   @ResponseBody
-  public String doLogout(HttpServletRequest req) { //Object -> ResultData로 코드 개선
-
-    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
+  public String doLogout() { //Object -> ResultData로 코드 개선
 
     if( !rq.isLogined() ){//로그인된 상태가 아니라면 -> 즉, 이미 로그아웃 상태
       return rq.jsHistoryBack("이미 로그아웃 상태입니다.");
