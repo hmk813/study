@@ -39,7 +39,7 @@ public class UsrArticleController {
   //액션 메서드 시작
   @RequestMapping("/usr/article/doWrite")
   @ResponseBody
-  public String doWrite(String title, String body, String replaceUri) {//HttpSession을 HttpServletRequest로 바꾼다.
+  public String doWrite(int boardId, String title, String body, String replaceUri) {//HttpSession을 HttpServletRequest로 바꾼다.
 
     if (  rq.isLogined() == false ) {
       return rq.jsHistoryBack("로그인 후 이용해주세요.");
@@ -53,7 +53,7 @@ public class UsrArticleController {
       return rq.jsHistoryBack("body(을)를 입력해주세요.");
     }
 
-    ResultData<Integer> writeArticleRd = articleService.writeArticle(rq.getLoginedMemberId(), title, body); // ResultData 뒤에 Rd 붙여준다!
+    ResultData<Integer> writeArticleRd = articleService.writeArticle(rq.getLoginedMemberId(), boardId, title, body); // ResultData 뒤에 Rd 붙여준다!
 
     int id = (int) writeArticleRd.getData1(); //형변환 필요!
 

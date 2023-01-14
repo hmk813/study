@@ -10,10 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class NeedLoginInterceptor implements HandlerInterceptor {
 
+  private Rq rq;
+
+  public NeedLoginInterceptor(Rq rq) {
+    this.rq = rq;
+  }
+
   @Override
   public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handle) throws Exception {
-
-    Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
    if( !rq.isLogined() ){ //로그인이 안되어있다면 로그인후 이용해주세요라고 해라!
      rq.printHistoryBackJs("로그인 후 이용해주세요.");
