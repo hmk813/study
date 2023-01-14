@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.service.ArticleService;
+import com.example.demo.service.BoardService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Article;
+import com.example.demo.vo.Board;
 import com.example.demo.vo.ResultData;
 import com.example.demo.vo.Rq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -20,6 +21,8 @@ public class UsrArticleController {
 
   @Autowired
   private ArticleService articleService;
+  @Autowired
+  private BoardService boardService;
 
   @RequestMapping("/usr/article/write")
   public String showWrite(HttpServletRequest req) {
@@ -56,12 +59,21 @@ public class UsrArticleController {
   }
 
   @RequestMapping("/usr/article/list")//리스트로 바꿔줌
-  public String showList(HttpServletRequest req, Model model) {// Model model 암기!
+  public String showList(HttpServletRequest req, Model model, int boardId) {// Model model 암기!
 
     Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
-    List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId());
+    Board board = boardService.getBoardById(boardId);
 
+    if( board == null ){//존재하지 않는 게시판 체크 추가!
+      return rq.historyBackJsOnView(Ut.f("%d번 게시판은 존재하지 않습니다.",  boardId));
+    }
+
+    int articlesCount = articleService.getArticlesCount(boardId); //게시물리스트에 게시물 개수 표시 추가!
+    List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId(), boardId);
+
+    model.addAttribute("board",board); //게시판을 만들었으니 추가해준다.
+    model.addAttribute("articlesCount", articlesCount);
     model.addAttribute("articles", articles); //역시 암기! JSP로 보내준다
 
     return "usr/article/list";

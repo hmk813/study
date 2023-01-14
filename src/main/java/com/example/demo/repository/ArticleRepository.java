@@ -66,4 +66,32 @@ public interface ArticleRepository {
   @Select("SELECT LAST_INSERT_ID()")
   public int getLastInsertId();
 
+  @Select("""
+                <script>
+                SELECT A.*,
+                M.nickname AS extra__writerName
+                FROM article AS A
+                LEFT JOIN member AS M
+                ON A.memberId = M.id
+                WHERE 1
+                <if test="boardId != 0">
+                    AND A.boardId = #{boardId}
+                </if>
+                ORDER BY A.id DESC
+                </script>                
+                """)
+  public List<Article> getArticles(@Param("boardId") int boardId);
+
+  @Select("""
+                <script>
+                SELECT COUNT(*) AS cnt
+                FROM article AS A
+                WHERE 1
+                <if test="boardId != 0">
+                    AND A.boardId = #{boardId}
+                </if>
+                </script>              
+                """)
+
+  public int getArticlesCount(@Param("boardId") int boardId);
 }

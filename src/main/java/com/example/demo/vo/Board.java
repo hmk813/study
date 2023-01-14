@@ -1,25 +1,17 @@
 package com.example.demo.vo;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
-
+public class Board {
   private int id;
   private String regDate;
   private String updateDate;
-  private String loginId;
-  private String loginPw;
-  private int authLevel;
-  private String name;
-  private String nickname;
-  private String cellphoneNo;
-  private String email;
-  private boolean delStatus;//delStatus는 boolean으로 해야된다 ->삭제여부
-  private String delDate; //삭제날짜
 
+  private String code;
+  private String name;
+  private boolean delStaus; //삭제여부
+  private String delDate; //삭제날짜
 }
