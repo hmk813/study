@@ -21,31 +21,38 @@ public class UsrArticleController {
   @Autowired
   private ArticleService articleService;
 
+  @RequestMapping("/usr/article/write")
+  public String showWrite(HttpServletRequest req) {
+    return "usr/article/write";
+  }
+
   //액션 메서드 시작
-  @RequestMapping("/usr/article/doAdd")
+  @RequestMapping("/usr/article/doWrite")
   @ResponseBody
-  public ResultData<Article> doAdd(HttpServletRequest req, String title, String body) {//HttpSession을 HttpServletRequest로 바꾼다.
+  public String doWrite(HttpServletRequest req, String title, String body, String replaceUri) {//HttpSession을 HttpServletRequest로 바꾼다.
     Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
-    if (rq.isLogined() == false) {
-      return ResultData.from("F-A", "로그인 후 이용해주세요.");
+    if (  rq.isLogined() == false ) {
+      return rq.jsHistoryBack("로그인 후 이용해주세요.");
     }
 
     if (Ut.empty(title)) {
-      return ResultData.from("F-1", "title을 입력해주세요.");
+      return rq.jsHistoryBack("title(을)를 입력해주세요.");
     }
 
     if (Ut.empty(body)) {
-      return ResultData.from("F-2", "body(을)를 입력해주세요.");
+      return rq.jsHistoryBack("body(을)를 입력해주세요.");
     }
 
     ResultData<Integer> writeArticleRd = articleService.writeArticle(rq.getLoginedMemberId(), title, body); // ResultData 뒤에 Rd 붙여준다!
 
     int id = (int) writeArticleRd.getData1(); //형변환 필요!
 
-    Article article = articleService.getForPrintArticle(rq.getLoginedMemberId(), id);
+    if(Ut.empty(replaceUri)){
+      replaceUri = Ut.f("../article/detail?id=%d", id);
+    }
 
-    return ResultData.newData(writeArticleRd, "article", article);
+    return rq.jsReplace(Ut.f("%d번 게시물이 생성되었습니다.", id), replaceUri);
   }
 
   @RequestMapping("/usr/article/list")//리스트로 바꿔줌
@@ -80,22 +87,22 @@ public class UsrArticleController {
     Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
     if (rq.isLogined() == false) {
-      return Ut.jsHistoryBack("로그인 후 이용해주세요.");
+      return rq.jsHistoryBack("로그인 후 이용해주세요.");
     }
 
     Article article = articleService.getForPrintArticle(rq.getLoginedMemberId(), id);
 
     if (article.getMemberId() != rq.getLoginedMemberId()) { //로그인아이디랑 멤버아이디랑 다르면 권한이 없다고 해야함
-      return Ut.jsHistoryBack( "권한이 없습니다.");
+      return rq.jsHistoryBack( "권한이 없습니다.");
     }
 
     if (article == null) {
-      return Ut.jsHistoryBack(Ut.f("%d번 게시물이 존재하지 않습니다.", id)); //실패
+      return rq.jsHistoryBack(Ut.f("%d번 게시물이 존재하지 않습니다.", id)); //실패
     }
 
     articleService.deleteArticle(id);
 
-    return Ut.jsReplace(Ut.f("%d번 게시물을 삭제하였습니다.", id), "../article/list");//성공
+    return rq.jsReplace(Ut.f("%d번 게시물을 삭제하였습니다.", id), "../article/list");//성공
   }
 
   @RequestMapping("/usr/article/modify")
@@ -126,28 +133,28 @@ public class UsrArticleController {
     Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
     if (  rq.isLogined() == false ) {
-      return Ut.jsHistoryBack("로그인 후 이용해주세요.");
+      return rq.jsHistoryBack("로그인 후 이용해주세요.");
     }
 
     Article article = articleService.getForPrintArticle(rq.getLoginedMemberId() , id);
 
     if (article.getMemberId() != rq.getLoginedMemberId()) { //로그인아이디랑 멤버아이디랑 다르면 권한이 없다고 해야함
-      return Ut.jsHistoryBack("권한이 없습니다.");
+      return rq.jsHistoryBack("권한이 없습니다.");
     }
 
     if( article == null ){
-        return Ut.jsHistoryBack(Ut.f("%번 게시물이 존재하지 않습니다.", id));
+        return rq.jsHistoryBack(Ut.f("%번 게시물이 존재하지 않습니다.", id));
     }
 
     ResultData actorCanModifyRd = articleService.actorCanModify(rq.getLoginedMemberId(), article);//수정할 수 있다.
 
     if(actorCanModifyRd.isFail()){
-      return Ut.jsHistoryBack(actorCanModifyRd.getMsg());
+      return rq.jsHistoryBack(actorCanModifyRd.getMsg());
     }
 
     articleService.modifyArticle(id, title, body);
 
-    return Ut.jsReplace(Ut.f("%d번 게시물이 수정되었습니다.", id), Ut.f("../article/detail?id=%d", id));
+    return rq.jsReplace(Ut.f("%d번 게시물이 수정되었습니다.", id), Ut.f("../article/detail?id=%d", id));
     }
 
 }

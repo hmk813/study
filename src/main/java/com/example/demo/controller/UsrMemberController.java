@@ -109,12 +109,12 @@ public class UsrMemberController {
     Rq rq = (Rq) req.getAttribute("rq");// 형변환을 해줘야됨
 
     if( !rq.isLogined() ){//로그인된 상태가 아니라면 -> 즉, 이미 로그아웃 상태
-      return Ut.jsHistoryBack("이미 로그아웃 상태입니다.");
+      return rq.jsHistoryBack("이미 로그아웃 상태입니다.");
     }
 
     //httpSession.removeAttribute("loginedMemberId"); //세션 삭제
     rq.logout();//rq에다가 위임한다
 
-    return Ut.jsReplace(Ut.f("로그아웃 되었습니다."), "/");//
+    return rq.jsReplace(Ut.f("로그아웃 되었습니다."), "/");//
   }
 }
