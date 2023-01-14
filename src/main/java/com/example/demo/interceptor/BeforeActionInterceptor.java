@@ -23,6 +23,7 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handle) throws Exception {
     // 이제는 Rq 객체가 자동으로 만들어지기 때문에 필요 없음
+    rq.initOnBeforeActionInterceptor();
 
     return HandlerInterceptor.super.preHandle(req, resp, handle);
   }

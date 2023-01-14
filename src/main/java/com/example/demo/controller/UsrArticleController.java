@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +33,7 @@ public class UsrArticleController {
   }
 
   @RequestMapping("/usr/article/write")
-  public String showWrite(HttpServletRequest req) {
+  public String showWrite(HttpServletRequest req)  {
     return "usr/article/write";
   }
 
@@ -65,7 +66,7 @@ public class UsrArticleController {
   }
 
   @RequestMapping("/usr/article/list")//리스트로 바꿔줌
-  public String showList(Model model, int boardId) {// Model model 암기!
+  public String showList(Model model, @RequestParam(defaultValue = "1") int boardId, @RequestParam(defaultValue = "1") int page) {// Model model 암기!
 
     Board board = boardService.getBoardById(boardId);
 
@@ -74,7 +75,9 @@ public class UsrArticleController {
     }
 
     int articlesCount = articleService.getArticlesCount(boardId); //게시물리스트에 게시물 개수 표시 추가!
-    List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId(), boardId);
+
+    int itemsCountInAPage = 10; //하나의 페이지에 10개를 카운트한다.
+    List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId(), boardId, itemsCountInAPage, page);
 
     model.addAttribute("board",board); //게시판을 만들었으니 추가해준다.
     model.addAttribute("articlesCount", articlesCount);
